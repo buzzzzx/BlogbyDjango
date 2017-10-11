@@ -22,12 +22,14 @@ class PostDetailView(View):
         post = get_object_or_404(Post, slug=post, status='published',
                                  publish__year=year, publish__month=month, publish__day=day)
         comments = post.comments.filter(active=True)
-        comment_form = CommentForm(request.POST)
+        comment_form = CommentForm()
         new_comment = None
         return render(request, 'blog/post/detail.html',
                       {'post': post, 'comments': comments, 'comment_form': comment_form, 'new_comment': new_comment, })
 
     def post(self, request, year, month, day, post):
+        post = get_object_or_404(Post, slug=post, status='published',
+                                 publish__year=year, publish__month=month, publish__day=day)
         comment_form = CommentForm(request.POST)
         new_comment = None
         comments = post.comments.filter(active=True)
@@ -35,9 +37,13 @@ class PostDetailView(View):
             new_comment = comment_form.save(commit=False)
             new_comment.post = post
             new_comment.save()
+            return render(request, 'blog/post/detail.html',
+                          {'post': post, 'comments': comments, 'comment_form': comment_form,
+                           'new_comment': new_comment, })
         else:
             return render(request, 'blog/post/detail.html',
-                          {'post': post, 'comments': comments, 'comment_form': comment_form, 'new_comment': new_comment, })
+                          {'post': post, 'comments': comments, 'comment_form': comment_form,
+                           'new_comment': new_comment, })
 
 
 class PostShareView(View):
