@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+
 {% extends 'blog/base.html' %}
 
 <title>{% block title %}My Blog{% endblock %}</title>
@@ -21,5 +20,3 @@
     {% include 'pagination.html' with page=page_obj %}
     
 {% endblock %}
-
-</html>
