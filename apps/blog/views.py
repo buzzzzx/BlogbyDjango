@@ -4,8 +4,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.mail import send_mail
 from taggit.models import Tag
 from django.db.models import Count
+from haystack.query import SearchQuerySet
 
-from .forms import EmailPostForm, CommentForm
+from .forms import EmailPostForm, CommentForm, SearchForm
 from .models import Post, Comment
 from BlogbyDjango.settings import EMAIL_FROM
 
@@ -53,7 +54,8 @@ class PostDetailView(View):
         similar_posts = similar_posts.annotate(same_tags=Count('tags')).order_by('-same_tags', '-publish')[:4]
 
         return render(request, 'blog/post/detail.html',
-                      {'post': post, 'comments': comments, 'comment_form': comment_form, 'new_comment': new_comment, 'similar_posts': similar_posts})
+                      {'post': post, 'comments': comments, 'comment_form': comment_form, 'new_comment': new_comment,
+                       'similar_posts': similar_posts})
 
     def post(self, request, year, month, day, post):
         post = get_object_or_404(Post, slug=post, status='published',
@@ -98,3 +100,19 @@ class PostShareView(View):
 
         else:
             return render(request, 'blog/post/share.html', {"form": form, 'sent': sent})
+
+
+# 搜索引擎视图
+def post_search(request):
+    form = SearchForm()
+    if 'query' in request.GET:
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            cd = form.cleaned_data
+            results = SearchQuerySet().models(Post).filter(content=cd['query']).load_all()
+            # count total results
+            total_results = results.count()
+    return render(request, 'blog/post/search.html', {'form': form,
+                                                     'cd': cd,
+                                                     'results': results,
+                                                     'total_results': total_results})

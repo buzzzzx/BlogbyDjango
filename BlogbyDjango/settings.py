@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'taggit',
     'django.contrib.sites',
     'django.contrib.sitemaps',
+    'haystack',
 ]
 SITE_ID = 1
 
@@ -149,3 +150,13 @@ EMAIL_HOST_USER = "buzzzzx@sina.com"
 EMAIL_HOST_PASSWORD = "batman123"
 EMAIL_USE_TLS = False
 EMAIL_FROM = "buzzzzx@sina.com"
+
+
+# SEARCHING SETTINGS
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://127.0.0.1:8983/solr/blog',
+    }
+}
