@@ -112,7 +112,9 @@ def post_search(request):
             results = SearchQuerySet().models(Post).filter(content=cd['query']).load_all()
             # count total results
             total_results = results.count()
-    return render(request, 'blog/post/search.html', {'form': form,
-                                                     'cd': cd,
-                                                     'results': results,
-                                                     'total_results': total_results})
+            return render(request, 'blog/post/search.html', {'form': form,
+                                                             'cd': cd,
+                                                             'results': results,
+                                                             'total_results': total_results})
+    else:
+        return render(request, 'blog/post/search.html', {'form': form})

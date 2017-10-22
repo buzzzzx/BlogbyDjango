@@ -4,7 +4,7 @@
 
 {% block content %}
     {% if 'query' in requet.GET %}
-        <h1>Posts containing "{{ cd.quert }}"</h1>
+        <h1>Posts containing "{{ cd.query }}"</h1>
         <h3>Found {{ total_results }} result{{ total_results|pluralize }}</h3>
         {% for result in results %}
             {% with post=result.object %}
